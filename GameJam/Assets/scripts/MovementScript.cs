@@ -11,11 +11,10 @@ public class MovementScript : MonoBehaviour
     [SerializeField] private Vector2 GroundCheckSize, GroundCheckOffset;
     [SerializeField] private LayerMask GroundCheckLayer;
 
-
     private Vector2 InputValue;
-    private bool StartJump;
+    private bool StartJump, StartFall;
     private bool Moving;
-    private bool IsHopping;
+    public bool IsHopping { get; set; }
     public bool IsBall { get; set; }
 
     private Rigidbody2D Rb;
@@ -55,26 +54,49 @@ public class MovementScript : MonoBehaviour
             Rb.constraints = RigidbodyConstraints2D.FreezeRotation;
             transform.rotation = startRotate;
         }
+
+        if (CanJump() && Rb.gravityScale > 1)
+        {
+            Rb.gravityScale = 1;
+        }
+
     }
     private void FixedUpdate()
     {
-        if (Moving)
+        //if (Moving)
+        //{
+        if (!IsBall)
         {
-            if (!IsBall)
-            {
-                Rb.velocity = new Vector2(InputValue.x * PlayerSpeed * Time.fixedDeltaTime, Rb.velocity.y);
-            }
-            else
-            {
-                Rb.AddForce((Vector2.right * InputValue.x * PlayerSpeed * Time.deltaTime));
-            }
+            Rb.velocity = new Vector2(InputValue.x * PlayerSpeed * Time.fixedDeltaTime, Rb.velocity.y);
+        }
+        else
+        {
+            Rb.AddForce((Vector2.right * InputValue.x * PlayerSpeed * Time.fixedDeltaTime));
+            GetComponent<PlayerAudioScript>().playRollSound();
+        }
+        //}
+
+        if (Moving && IsHopping)
+        {
+            GetComponent<PlayerAudioScript>().playWalkSoundDelayed();
         }
 
         if (StartJump)
         {
-            Rb.AddForce(Vector2.up * JumpForce);
+            Rb.velocity = new Vector2(Rb.velocity.x, JumpForce);
             StartJump = false;
         }
+
+        if (Rb.velocity.y < 0)
+        {
+            Rb.gravityScale = FallMultiplier;
+        }
+        else if (StartFall && Rb.velocity.y > 0)
+        {
+            Rb.gravityScale = LowJumpMultiplier;
+            StartFall = false;
+        }
+
     }
     public void OnMove(InputAction.CallbackContext ctx)
     {
@@ -84,11 +106,20 @@ public class MovementScript : MonoBehaviour
 
     public void OnJump(InputAction.CallbackContext ctx)
     {
+
         if (ctx.started)
         {
             if (CanJump())
             {
                 StartJump = true;
+            }
+        }
+
+        if (ctx.canceled)
+        {
+            if (!CanJump())
+            {
+                StartFall = true;
             }
         }
     }

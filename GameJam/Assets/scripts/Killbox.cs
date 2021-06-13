@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Killbox : MonoBehaviour
 {
@@ -11,7 +12,17 @@ public class Killbox : MonoBehaviour
         if (collision.CompareTag(playerTag))
         {
             Debug.Log("Death, restart scene/ respawn player");
-            UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
+            ResetScene();
         }
+    }
+
+    public void Die()
+    {
+        ResetScene();
+    }
+
+    private void ResetScene()
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
     }
 }

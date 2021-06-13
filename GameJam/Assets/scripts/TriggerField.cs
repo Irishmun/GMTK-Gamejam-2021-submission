@@ -9,21 +9,26 @@ public class TriggerField : MonoBehaviour
     [SerializeField] Sprite ActivatedSprite, RegularSprite;
     private SpriteRenderer ChildRender;
 
-    public UnityEvent OnButtonActive, OnButtonInactive;
+    public UnityEvent OnButtonActive, OnButtonInactive, OnSoundActive;
     private bool activated;
+
+    private int ObjectsOnTrigger;
     private void Awake()
     {
         ChildRender = GetComponentInChildren<SpriteRenderer>();
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        Debug.Log("Collision");
         if (collision.CompareTag(playerTag))
         {
             //open door
+            ObjectsOnTrigger++;
             if (!activated)
             {
                 ChildRender.sprite = ActivatedSprite;
                 OnButtonActive.Invoke();
+                OnSoundActive.Invoke();
                 activated = true;
             }
         }
@@ -31,6 +36,7 @@ public class TriggerField : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D collision)
     {
+        Debug.Log("Stay");
         if (collision.CompareTag(playerTag))
         {
             //open door
@@ -47,7 +53,8 @@ public class TriggerField : MonoBehaviour
     {
         if (collision.CompareTag(playerTag))
         {
-            if (activated)
+            ObjectsOnTrigger--;
+            if (activated && ObjectsOnTrigger < 1)
             {
                 //close door
                 ChildRender.sprite = RegularSprite;

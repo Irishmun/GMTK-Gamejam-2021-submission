@@ -12,6 +12,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Tutorial2Scene.unity
     guid: a18b5add86f228d44b1e0f5cbdbdaf0e
   - enabled: 1
+    path: Assets/Scenes/Puzzle1Scene.unity
+    guid: 12b9d2f6277894a48946e02ecbb0a349
+  - enabled: 1
     path: Assets/Scenes/EndScreenScene.unity
     guid: c40ccacf43e06dd46a9b5838285949a5
   m_configObjects:

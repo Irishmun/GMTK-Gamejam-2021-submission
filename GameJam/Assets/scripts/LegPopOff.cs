@@ -22,6 +22,7 @@ public class LegPopOff : MonoBehaviour
             //become ball
             gameObject.GetComponent<MovementScript>().IsBall = true;
             gameObject.GetComponent<Animator>().SetBool("IsBall", true);
+            gameObject.GetComponent<MovementScript>().IsHopping = false;
         }
         else if (DetachedLegs == 1)
         {
@@ -29,6 +30,7 @@ public class LegPopOff : MonoBehaviour
             gameObject.GetComponent<MovementScript>().IsBall = false;
             gameObject.GetComponent<Animator>().SetBool("IsBall", false);
             gameObject.GetComponent<Animator>().SetBool("Hopping", true);
+            gameObject.GetComponent<MovementScript>().IsHopping = true;
         }
         else if (DetachedLegs <= 0)
         {
@@ -36,6 +38,7 @@ public class LegPopOff : MonoBehaviour
             gameObject.GetComponent<MovementScript>().IsBall = false;
             gameObject.GetComponent<Animator>().SetBool("IsBall", false);
             gameObject.GetComponent<Animator>().SetBool("Hopping", false);
+            gameObject.GetComponent<MovementScript>().IsHopping = false;
         }
     }
     public void TryAttachLeg(InputAction.CallbackContext ctx)
@@ -79,6 +82,18 @@ public class LegPopOff : MonoBehaviour
         {
             isLeg = false;
         }
+    }
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.GetComponentInParent<LegScript>())
+        {
+            isLeg = true;
+            if (CurrentLeg != collision.gameObject)
+            {
+                CurrentLeg = collision.gameObject;
+            }
+        }
+
     }
     private void OnTriggerExit2D(Collider2D collision)
     {

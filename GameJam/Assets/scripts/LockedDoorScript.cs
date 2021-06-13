@@ -17,10 +17,12 @@ public class LockedDoorScript : MonoBehaviour
     public void OpenDoor()
     {
         transform.position = DoorStart + DoorOpenOffset;
+        GetComponent<BoxCollider2D>().enabled = false;
     }
 
     public void CloseDoor()
     {
+        GetComponent<BoxCollider2D>().enabled = true;
         transform.position = DoorStart;
     }
 
